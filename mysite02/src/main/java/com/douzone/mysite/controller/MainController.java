@@ -2,13 +2,14 @@ package com.douzone.mysite.controller;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.douzone.web.util.MvcUtil;
+import com.douzone.mysite.mvc.MainActionFactory;
+import com.douzone.web.mvc.Action;
+import com.douzone.web.mvc.ActionFactory;
 
 
 public class MainController extends HttpServlet {
@@ -18,7 +19,11 @@ public class MainController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		
-		MvcUtil.forward("/WEB-INF/views/main/index.jsp", request, response);
+		String actionName = request.getParameter("a");
+		
+		ActionFactory af = new MainActionFactory();
+		Action action = af.getAction(actionName);
+		action.execute(request, response);
 	}
 
 

@@ -7,8 +7,17 @@ public class UserActionFactory extends ActionFactory {
 
 	@Override
 	public Action getAction(String actionName) {
-		// TODO Auto-generated method stub
-		return null;
+		Action action = null;
+		
+		if ("joinform".equals(actionName)) {
+			action = new JoinFormAction();
+		} else if ("join".equals(actionName)) {
+//			action = new JoinAction();
+		} else {
+			action = new MainAction();
+		}
+		
+		return action;
 	}
 
 }
