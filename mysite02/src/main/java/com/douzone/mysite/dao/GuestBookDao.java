@@ -22,7 +22,7 @@ public class GuestBookDao {
 			
 			//3. SQL 준비
 			String sql = "select no, name, date_format(reg_date, '%Y/%m/%d %H:%i:%s'), message from guestbook "
-					+ " order by reg_date desc";
+					+ " order by reg_date";
 			pstmt = conn.prepareStatement(sql);
 			
 			//4. 바인딩(binding)
