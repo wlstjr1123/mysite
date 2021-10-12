@@ -11,14 +11,22 @@ import javax.servlet.http.HttpServletResponse;
 import com.douzone.web.util.MvcUtil;
 
 
-public class MainController extends HttpServlet {
+public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		
-		MvcUtil.forward("/WEB-INF/views/main/index.jsp", request, response);
+		String action = request.getParameter("a");
+		
+		if ("joinform".equals(action)) {
+			MvcUtil.forward("/WEB-INF/views/user/joinform.jsp", request, response);
+		} else if("join".equals(action)) {
+			
+		} else {
+			MvcUtil.redirect(request.getContextPath(), request, response);
+		}
 	}
 
 
