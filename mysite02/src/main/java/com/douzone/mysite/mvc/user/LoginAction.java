@@ -21,6 +21,7 @@ public class LoginAction implements Action {
 		UserVo vo = new UserDao().findByEmailAndPassword(email, password);
 		if (vo == null) {
 			/* 로그인 실패 */
+			request.setAttribute("result", "fail");
 			MvcUtil.forward("user/loginform", request, response);
 			return;
 		}
