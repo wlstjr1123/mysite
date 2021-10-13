@@ -22,7 +22,7 @@ public class GuestBookAction implements Action {
 		
 		request.setAttribute("list", list);
 		
-		MvcUtil.forward("/guestbook/list", request, response);
+		MvcUtil.forward("guestbook/list", request, response);
 	}
 
 }
