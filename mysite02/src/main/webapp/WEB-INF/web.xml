@@ -30,12 +30,12 @@
 		<init-param>
 			<param-name>encoding</param-name>
 			<param-value>UTF-8</param-value>
-		</init-param>
+		</init-param>		
 	</filter>
-	<filter-mappint>
+	<filter-mapping>
 		<filter-name>EncodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mappint>
+		<url-pattern>/*</url-pattern>	
+	</filter-mapping>
 	
 	<!-- Servlets -->
 	<servlet>
