@@ -23,7 +23,7 @@ public class EncodingFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		/* reqeust */
 		request.setCharacterEncoding(encoding);
-		System.out.println("doFileter called");
+//		System.out.println("doFileter called");
 		chain.doFilter(request, response);
 		
 		/* response */
