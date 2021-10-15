@@ -65,7 +65,7 @@ public class BoardDao {
 			conn = getConnection();
 			
 			//3. SQL 준비
-			String sql = "select b.no, b.title, b.contents, b.hit, b.reg_date, b.group_no, b.order_no, b.depth, b.user_no, u.name "
+			String sql = "select b.no, b.title, b.contents, b.hit, b.reg_date, b.group_no, b.order_no, b.depth, b.user_no, u.name, b.delete "
 					+ "		from board b join `user` u on b.user_no = u.no "
 					+ "		order by group_no desc,  order_no asc "
 					+ "    	limit ?, 10";
@@ -89,6 +89,7 @@ public class BoardDao {
 				Long depth = rs.getLong(8);
 				Long UserNo = rs.getLong(9);
 				String name = rs.getString(10);
+				String delete = rs.getString(11);
 				
 				BoardVo vo = new BoardVo();
 				vo.setNo(no);
@@ -101,6 +102,7 @@ public class BoardDao {
 				vo.setDepth(depth);
 				vo.setUserNo(UserNo);
 				vo.setName(name);
+				vo.setDelete(delete);
 				
 				result.add(vo);
 			}
@@ -328,7 +330,7 @@ public class BoardDao {
 			//3. SQL 준비
 			String sql = "insert into board "
 					+ "		value (null, ?, ?, '0', now(), "
-					+ "				(select ifnull(max(group_no), 0)+1 from board a), 0, 0, ?)";
+					+ "				(select ifnull(max(group_no), 0)+1 from board a), 0, 0, ?, 'false')";
 			pstmt = conn.prepareStatement(sql);
 			
 			//4. 바인딩(binding)
@@ -368,7 +370,7 @@ public class BoardDao {
 			conn = getConnection();
 			
 			//3. SQL 준비
-			String sql = "insert into board value (null, ?, ?, '0', now(), ?, ?, ?, ?)";
+			String sql = "insert into board value (null, ?, ?, '0', now(), ?, ?, ?, ?, 'false')";
 			pstmt = conn.prepareStatement(sql);
 			
 			//4. 바인딩(binding)
@@ -378,6 +380,46 @@ public class BoardDao {
 			pstmt.setLong(4, vo.getOrderNo() + 1);
 			pstmt.setLong(5, vo.getDepth() + 1);
 			pstmt.setLong(6, userNo);
+			
+			//5. SQL 실행
+			int count = pstmt.executeUpdate();
+			
+			result = count == 1;
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			// clean up
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
+	public boolean delete(Long no) {
+		boolean result = false;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = getConnection();
+			
+			//3. SQL 준비
+			String sql = "update board "
+					+ "	set `delete` = true "
+					+ "    where `no` = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			//4. 바인딩(binding)
+			pstmt.setLong(1, no);
 			
 			//5. SQL 실행
 			int count = pstmt.executeUpdate();

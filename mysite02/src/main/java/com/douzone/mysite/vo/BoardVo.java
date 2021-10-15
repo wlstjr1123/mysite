@@ -11,7 +11,14 @@ public class BoardVo {
 	private Long depth;
 	private Long userNo;
 	private String name;
+	private String delete;
 	
+	public String getDelete() {
+		return delete;
+	}
+	public void setDelete(String delete) {
+		this.delete = delete;
+	}
 	public String getName() {
 		return name;
 	}

@@ -20,7 +20,7 @@
 						<form class="board-form" method="post" action="${pageContext.request.contextPath }/board?a=register">	
 					</c:when>
 					<c:otherwise>
-						<form class="board-form" method="post" action="${pageContext.request.contextPath }/board?a=answer&parentNo=${parentVo.no }">
+						<form class="board-form" method="post" action="${pageContext.request.contextPath }/board?a=answer&parentNo=${parentVo.no }&page=${page }">
 					</c:otherwise>
 				</c:choose>
 				

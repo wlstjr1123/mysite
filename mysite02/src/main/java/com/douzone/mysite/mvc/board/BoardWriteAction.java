@@ -21,14 +21,19 @@ public class BoardWriteAction implements Action {
 		HttpSession session = request.getSession();
 		UserVo sessionVo = (UserVo) session.getAttribute("authUser");
 		if (sessionVo == null) {
-			MvcUtil.redirect(request.getContextPath() + "/board?a=list", request, response);
+			MvcUtil.redirect(request.getContextPath() + "/user?a=loginform", request, response);
 			return;
 		}
 		
 		String writeNo = request.getParameter("writeNo");
+		String page = request.getParameter("page");
 		if (writeNo != null) {
 			BoardVo vo = new BoardDao().findWrite(Long.parseLong(writeNo));
 			request.setAttribute("parentVo", vo);
+		}
+		
+		if (page != null) {
+			request.setAttribute("page", page);
 		}
 		
 		MvcUtil.forward("board/write", request, response);

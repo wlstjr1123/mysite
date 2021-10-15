@@ -17,6 +17,7 @@ public class BoardViewAction implements Action {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String writeNo = request.getParameter("no");
+		String page = request.getParameter("page");
 		
 		
 		Cookie viewsCookie = null;
@@ -46,6 +47,7 @@ public class BoardViewAction implements Action {
 		BoardVo vo = new BoardDao().findWrite(Long.parseLong(writeNo));
 		
 		request.setAttribute("vo", vo);
+		request.setAttribute("page", page);
 		MvcUtil.forward("board/view", request, response);
 
 	}

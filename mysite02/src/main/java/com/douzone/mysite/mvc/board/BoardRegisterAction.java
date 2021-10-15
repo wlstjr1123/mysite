@@ -24,7 +24,7 @@ public class BoardRegisterAction implements Action {
 		HttpSession session = request.getSession();
 		UserVo sessionUserVo = (UserVo) session.getAttribute("authUser");
 		if (sessionUserVo == null || title == null || title.equals("") || contents == null || contents.equals("")) {
-			MvcUtil.redirect(request.getContextPath() + "/board?a=list", request, response);
+			MvcUtil.redirect(request.getContextPath() + "/user?a=loginform", request, response);
 			return;
 		}
 		

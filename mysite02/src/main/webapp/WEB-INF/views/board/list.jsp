@@ -37,13 +37,21 @@
 								<c:if test="${vo.depth > 0 }">
 									<img src='${pageContext.servletContext.contextPath }/assets/images/reply.png' />
 								</c:if>
-								<a href="${pageContext.request.contextPath }/board?a=view&no=${vo.no }&page=${page }">${vo.title }</a></td>
+								<c:choose>
+									<c:when test="${vo.delete eq 'false' }">
+										<a href="${pageContext.request.contextPath }/board?a=view&no=${vo.no }&page=${page }">${vo.title }</a>
+									</c:when>
+									<c:otherwise>
+										<p>삭제된 게시글입니다.</p>
+									</c:otherwise>
+								</c:choose>
+							</td>
 							<td>${vo.name }</td>
 							<td>${vo.hit }</td>
 							<td>${vo.regDate }</td>
 							<td>
-								<c:if test='${authUser.no eq vo.userNo }'>
-									<a href="${pageContext.request.contextPath }/board?a=delete&page=${page }" class="del">삭제</a>
+								<c:if test="${authUser.no eq vo.userNo && vo.delete eq 'false' }">
+									<a href="${pageContext.request.contextPath }/board?a=delete&page=${page }&no=${vo.no }" class="del">삭제</a>
 								</c:if>
 							</td>
 						</tr>

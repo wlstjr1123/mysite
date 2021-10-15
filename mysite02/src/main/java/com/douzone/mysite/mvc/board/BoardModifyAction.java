@@ -27,7 +27,7 @@ public class BoardModifyAction implements Action {
 		HttpSession session = request.getSession();
 		UserVo sessionVo = (UserVo) session.getAttribute("authUser");
 		if (sessionVo == null) {
-			MvcUtil.redirect(request.getContextPath() + "/board?a=list&page=" + page, request, response);
+			MvcUtil.redirect(request.getContextPath() + "/user?a=loginform" + page, request, response);
 			return;
 		}
 		

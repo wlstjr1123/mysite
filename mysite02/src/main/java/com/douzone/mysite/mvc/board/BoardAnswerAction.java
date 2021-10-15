@@ -20,12 +20,13 @@ public class BoardAnswerAction implements Action {
 		String parentNo = request.getParameter("parentNo");
 		String title = request.getParameter("title");
 		String contents = request.getParameter("content");
+		String page = request.getParameter("page");
 		Long userNo;
 		
 		HttpSession session = request.getSession();
 		UserVo sessionUserVo = (UserVo) session.getAttribute("authUser");
 		if (sessionUserVo == null) {
-			MvcUtil.redirect(request.getContextPath() + "/board?a=list", request, response);
+			MvcUtil.redirect(request.getContextPath() + "/user?a=loginform", request, response);
 			return;
 		}
 		
@@ -37,7 +38,7 @@ public class BoardAnswerAction implements Action {
 		
 		new BoardDao().insertAnswer(parentBoard, title, contents, userNo);
 		
-		MvcUtil.redirect(request.getContextPath() + "/board?a=list", request, response);
+		MvcUtil.redirect(request.getContextPath() + "/board?a=list&page=" + page, request, response);
 	}
 
 }
