@@ -1,10 +1,15 @@
 desc board;
 
 -- insert
-insert into board value (null, '안녕', '안녕하세요', '0', now(), (select ifnull(max(group_no), 0)+1 from board a), 0, 0, 1);
+insert into board value (null, '안녕', '안녕하세요', '0', now(), (select ifnull(max(group_no), 0)+1 from board a), 0, 0, 1, 'false');
 
 -- answer insert
 insert into board value (null, '그래', '안녕', '0', now(), 54, 1, 1, 1);
+
+-- delete
+update board
+	set `delete` = true
+    where `no` = 1;
 
 -- select 01
 select * from board;
