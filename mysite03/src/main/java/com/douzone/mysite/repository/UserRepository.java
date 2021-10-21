@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.douzone.mysite.exception.UserRepositoryException;
@@ -15,6 +18,8 @@ import com.douzone.mysite.vo.UserVo;
 
 @Repository
 public class UserRepository {
+	@Autowired
+	private DataSource dataSource;
 	
 	public UserVo findByEmailAndPassword(String email, String password) {
 		UserVo vo = null;
@@ -22,7 +27,7 @@ public class UserRepository {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			//3. SQL 준비
 			String sql = "select no, name "
@@ -77,7 +82,7 @@ public class UserRepository {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			//3. SQL 준비
 			String sql = "select no, name, email, gender"
@@ -133,7 +138,7 @@ public class UserRepository {
 		PreparedStatement pstmt = null;
 		
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			//3. SQL 준비
 			String sql = "update user "
@@ -176,7 +181,7 @@ public class UserRepository {
 		PreparedStatement pstmt = null;
 		
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			//3. SQL 준비
 			String sql = "insert "
@@ -212,20 +217,5 @@ public class UserRepository {
 		
 		return result;
 	}
-	
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
-		try {
-			// 1. JDBC Driver 로딩
-			Class.forName("org.mariadb.jdbc.Driver");
 
-			// 2. 연결하기
-			String url = "jdbc:mysql://127.0.0.1:3307/webdb?charset=utf8";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패:" + e);
-		}
-
-		return conn;
-	}
 }
