@@ -39,7 +39,7 @@
 								</c:if>
 								<c:choose>
 									<c:when test="${vo.delete eq 'false' }">
-										<a href="${pageContext.request.contextPath }/board?a=view&no=${vo.no }&page=${page }">${vo.title }</a>
+										<a href="${pageContext.request.contextPath }/board/view/${vo.no }/${page }">${vo.title }</a>
 									</c:when>
 									<c:otherwise>
 										<p>삭제된 게시글입니다.</p>
@@ -63,7 +63,7 @@
 				<div class="pager">
 					<ul>
 						<c:if test="${page ne 0 }">
-							<li><a href="${pageContext.request.contextPath }/board?a=list&page=${page-1}">◀</a></li>
+							<li><a href="${pageContext.request.contextPath }/board/list/${page-1}">◀</a></li>
 						</c:if>
 						<c:forEach var='i' begin='${startPage }' end='${endPage }'>
 							<c:choose>
@@ -76,21 +76,21 @@
 											<li>${i+1 }</li>
 										</c:when>
 										<c:otherwise>
-											<li><a href="${pageContext.request.contextPath }/board?a=list&page=${i}">${i+1 }</a></li>
+											<li><a href="${pageContext.request.contextPath }/board/list/${i}">${i+1 }</a></li>
 										</c:otherwise>
 									</c:choose>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
 						<c:if test="${page+1 != (count/10)+(1-((count/10)%1))%1 }">
-							<li><a href="${pageContext.request.contextPath }/board?a=list&page=${page+1}">▶</a></li>
+							<li><a href="${pageContext.request.contextPath }/board/list/${page+1}">▶</a></li>
 						</c:if>
 					</ul>
 				</div>
 				<!-- pager 추가 -->
 
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath }/board?a=write"
+					<a href="${pageContext.request.contextPath }/board/write"
 						id="new-book">글쓰기</a>
 				</div>
 			</div>

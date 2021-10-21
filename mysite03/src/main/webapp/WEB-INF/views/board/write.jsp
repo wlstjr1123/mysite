@@ -17,10 +17,10 @@
 			<div id="board">
 				<c:choose>
 					<c:when test="${empty parentVo }">
-						<form class="board-form" method="post" action="${pageContext.request.contextPath }/board?a=register">	
+						<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/register">	
 					</c:when>
 					<c:otherwise>
-						<form class="board-form" method="post" action="${pageContext.request.contextPath }/board?a=answer&parentNo=${parentVo.no }&page=${page }">
+						<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/answer/${parentVo.no }/${page }">
 					</c:otherwise>
 				</c:choose>
 				

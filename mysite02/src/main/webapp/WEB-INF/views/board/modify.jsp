@@ -15,7 +15,7 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board?a=modifyReg&page=${page }">
+				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/modifyReg/${page }">
 					<input type="hidden" name="writeNo" value="${vo.no }"/>
 					<table class="tbl-ex">
 						<tr>

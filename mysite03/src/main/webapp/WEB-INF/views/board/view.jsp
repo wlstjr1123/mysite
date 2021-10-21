@@ -33,9 +33,9 @@
 					</tr>
 				</table>
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath }/board?a=list&page=${page }">글목록</a>
+					<a href="${pageContext.request.contextPath }/board/list/${page }">글목록</a>
 					<c:if test='${authUser.no eq vo.userNo }'>
-						<a href="${pageContext.request.contextPath }/board?a=modify&writeNo=${vo.no }&page=${page }">글수정</a>
+						<a href="${pageContext.request.contextPath }/board/modify/${vo.no }/${page }">글수정</a>
 						<a href="${pageContext.request.contextPath }/board?a=write&writeNo=${vo.no }&page=${page }">답글</a>
 					</c:if>
 				</div>
