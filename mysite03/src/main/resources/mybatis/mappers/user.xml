@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="user">
+	<update id="update" parameterType="uservo">
+		<![CDATA[
+			update user
+				set password =#{password }, name = #{name }, gender = #{gender }
+			where no = ?
+		]]>
+	</update>
+
+	<insert id="insert" parameterType="uservo">
+		<![CDATA[
+			insert into user
+				values(null, #{name }, #{email }, #{password }, #{gender }, now())
+		]]>
+	</insert>
+	
+	<select id="findByEmailAndPassword" parameterType="map" resultType="uservo">
+		<![CDATA[]
+			select no, name
+				from user
+			where email = #{e }
+				and password = #{p }
+		]]>
+	</select>
+	
+	<select id="findByNo" parameterType="long" resultType="uservo">
+		<![CDATA[]
+			select no, name, email, gender
+				from user "
+			where no = #{dkanrjsk }
+		]]>
+	</select>
+</mapper>
