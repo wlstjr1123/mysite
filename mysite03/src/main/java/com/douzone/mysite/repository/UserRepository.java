@@ -31,7 +31,7 @@ public class UserRepository {
 		map.put("e", email);
 		map.put("p", password);
 		
-		UserVo vo = sqlSession.selectOne("user.findByemailAndPassword", map);
+		UserVo vo = sqlSession.selectOne("user.findByEmailAndPassword", map);
 		
 		return vo;
 	}
@@ -41,7 +41,7 @@ public class UserRepository {
 	}
 	
 	public boolean update(UserVo vo) {
-		int count = sqlSession.selectOne("user.update", vo);
+		int count = sqlSession.update("user.update", vo);
 		
 		return count == 1;
 	}
