@@ -38,6 +38,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		// public class 클래스
 		if (auth == null) {
 			// 과제
+			
+			auth = handlerMethod.getMethod().getDeclaringClass().getAnnotation(Auth.class);
+//			auth = handlerMethod.getBeanType().getAnnotation(Auth.class);
 		}
 		
 		// 5. Type과 Method에 @Auth가 적용이 안되어 있는 경우
@@ -64,9 +67,14 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		
 		
 		// 8. 권한 체크 (6번 결과와 7번결과를 비교하기)
-		//		과제
+//		if ("ADMIN".equals(role)) {
+//			if (authUser.getRole().equals("ADMIN")==false) {
+//				response.sendRedirect(request.getContextPath());
+//				return false;
+//			}
+//		}
 		
 		
-		return false;
+		return true;
 	}
 }
