@@ -7,7 +7,7 @@
 			insert into gallery values(null, #{url },#{comments })
 		]]>
 	</insert>
-	
+
 	<select id="findAll" resultType="galleryvo">
 		<![CDATA[
 			select `no`, url, comments from gallery

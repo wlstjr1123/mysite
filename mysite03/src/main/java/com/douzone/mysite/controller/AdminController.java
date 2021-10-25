@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.douzone.mysite.security.Auth;
 
-@Auth(role="ADMIN")
+@Auth(role = "ADMIN")
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -14,17 +14,17 @@ public class AdminController {
 	public String main() {
 		return "admin/main";
 	}
-	
+
 	@RequestMapping("/guestbook")
 	public String guentbook() {
 		return "admin/guestbook";
 	}
-	
+
 	@RequestMapping("/board")
 	public String board() {
 		return "admin/board";
 	}
-	
+
 	@RequestMapping("/user")
 	public String user() {
 		return "admin/user";

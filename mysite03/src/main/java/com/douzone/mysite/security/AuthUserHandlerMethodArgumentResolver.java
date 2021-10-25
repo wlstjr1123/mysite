@@ -14,38 +14,36 @@ import com.douzone.mysite.vo.UserVo;
 
 public class AuthUserHandlerMethodArgumentResolver extends HandlerMethodArgumentResolverComposite {
 
-	
-
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 		if (!supportsParameter(parameter)) {
 			return WebArgumentResolver.UNRESOLVED;
 		}
-		
+
 		HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 		HttpSession session = request.getSession();
 		if (session == null) {
 			return null;
 		}
-		
+
 		return session.getAttribute("authUser");
 	}
-	
+
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		AuthUser authUser = parameter.getParameterAnnotation(AuthUser.class);
-		
+
 		// @AuthUser가 안 붙어 있음
 		if (authUser == null) {
 			return false;
 		}
-		
+
 		// 파라미터 타입이 USerVo가 아님
 		if (parameter.getParameterType().equals(UserVo.class) == false) {
 			return false;
 		}
-		
+
 		return true;
 	}
 

@@ -16,24 +16,24 @@ import com.douzone.mysite.vo.UserVo;
 public class UserController {
 	@Autowired
 	private UserService userService;
-	
-	@RequestMapping(value="/join", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public String join() {
 		return "user/join";
 	}
-	
-	@RequestMapping(value="/join", method=RequestMethod.POST)
+
+	@RequestMapping(value = "/join", method = RequestMethod.POST)
 	public String join(UserVo vo) {
 		userService.join(vo);
 		return "redirect:/user/joinsuccess";
 	}
-	
+
 	@RequestMapping("/joinsuccess")
 	public String joinsuccess() {
 		return "user/joinsuccess";
 	}
-	
-	@RequestMapping(value="/login", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "user/login";
 	}
@@ -44,7 +44,7 @@ public class UserController {
 //		session.invalidate();
 //		return "redirect:/";
 //	}
-	
+
 //	@RequestMapping(value="/login", method=RequestMethod.POST)
 //	public String login(
 //		HttpSession session,	
@@ -63,28 +63,28 @@ public class UserController {
 //		
 //		return "redirect:/";
 //	}
-	
-	@Auth
-	@RequestMapping(value="/update", method=RequestMethod.GET)
-	public String update(@AuthUser UserVo authUser, Model model) {		
-		UserVo userVo = userService.getUser(authUser.getNo());
-		model.addAttribute("userVo", userVo);
-		
-		return "user/update";
-	}	
 
 	@Auth
-	@RequestMapping(value="/update", method=RequestMethod.POST)
+	@RequestMapping(value = "/update", method = RequestMethod.GET)
+	public String update(@AuthUser UserVo authUser, Model model) {
+		UserVo userVo = userService.getUser(authUser.getNo());
+		model.addAttribute("userVo", userVo);
+
+		return "user/update";
+	}
+
+	@Auth
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@AuthUser UserVo authUser, UserVo userVo) {
-		if(authUser == null) {
+		if (authUser == null) {
 			return "redirect:/";
 		}
 		//////////////////////////////////////////////////////////
-		
+
 		userVo.setNo(authUser.getNo());
 		userService.updateUser(userVo);
-		
+
 		authUser.setName(userVo.getName());
 		return "redirect:/user/update";
-	}	
+	}
 }
