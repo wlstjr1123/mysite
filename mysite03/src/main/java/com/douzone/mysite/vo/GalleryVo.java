@@ -1,15 +1,13 @@
 package com.douzone.mysite.vo;
 
 public class GalleryVo {
-	private long no;
+	private Long no;
 	private String url;
 	private String comments;
-	
-	
-	public long getNo() {
+	public Long getNo() {
 		return no;
 	}
-	public void setNo(long no) {
+	public void setNo(Long no) {
 		this.no = no;
 	}
 	public String getUrl() {
@@ -24,7 +22,6 @@ public class GalleryVo {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	
 	@Override
 	public String toString() {
 		return "GalleryVo [no=" + no + ", url=" + url + ", comments=" + comments + "]";

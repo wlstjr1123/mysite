@@ -12,7 +12,7 @@ public class LogoutInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		HttpSession session = request.getSession();
-		if (session == null) {
+		if(session == null) {
 			return false;
 		}
 		
@@ -20,7 +20,6 @@ public class LogoutInterceptor extends HandlerInterceptorAdapter {
 		session.invalidate();
 		
 		response.sendRedirect(request.getContextPath());
-		
 		return false;
 	}
 }

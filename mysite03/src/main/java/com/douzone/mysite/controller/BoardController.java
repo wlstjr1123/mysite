@@ -1,190 +1,91 @@
 package com.douzone.mysite.controller;
 
-import java.util.List;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.douzone.mysite.security.Auth;
+import com.douzone.mysite.security.AuthUser;
 import com.douzone.mysite.service.BoardService;
 import com.douzone.mysite.vo.BoardVo;
 import com.douzone.mysite.vo.UserVo;
+import com.douzone.web.util.WebUtil;
 
 @Controller
 @RequestMapping("/board")
 public class BoardController {
 	@Autowired
 	private BoardService boardService;
-	
-	@RequestMapping("/list/{page}")
-	public String list(@PathVariable("page") String page, Model model) {
-		
-		if (page == null || page.equals("")) {
-			page = "0";
-		}
-		
-		List<BoardVo> list = boardService.findPage(Integer.parseInt(page));
-		Long count = boardService.dataCount();
-		
-		Long startPage = 0L, endPage = 0L;
-		
-		if (Integer.parseInt(page) > 1 && Integer.parseInt(page) < count - 2) {
-			startPage = Long.parseLong(page) - 2;
-			endPage = Long.parseLong(page) + 2;
-		} else {
-			if (Integer.parseInt(page) < 2) {
-				startPage = 0L;
-				endPage = 4L;
-			} else if (Integer.parseInt(page) > count-3) {
-				startPage = count-5;
-				endPage = count-1;
-			}
-		}
-		
-		model.addAttribute("list", list);
-		model.addAttribute("count", count);
-		model.addAttribute("page", Integer.parseInt(page));
-		model.addAttribute("startPage", startPage);
-		model.addAttribute("endPage", endPage);
-		return "board/list";
+
+	@RequestMapping("")
+	public String index(@RequestParam(value = "p", required = true, defaultValue = "1") Integer page, @RequestParam(value = "kwd", required = true, defaultValue = "") String keyword, Model model) {
+		Map<String, Object> map = boardService.getContentsList(page, keyword);
+		model.addAttribute("map", map);
+		// model.addAllAttributes(map);
+		return "board/index";
 	}
-	
-	@RequestMapping(value="/write/{no}/{page}", method=RequestMethod.GET)
-	public String getWrite(
-			@PathVariable(value="no", required = false) String writeNo, 
-			@PathVariable(value="page", required = false) String page, 
-			HttpSession session, 
-			Model model) {
-		UserVo sessionVo = (UserVo) session.getAttribute("authUser");
-		if (sessionVo == null) {
-			return "redirect:/user/login";
-		}
-		
-		if (writeNo != null) {
-			BoardVo vo = boardService.findWrite(Long.parseLong(writeNo));
-			model.addAttribute("parentVo", vo);
-		}
-		
-		if (page != null) {
-			model.addAttribute("page", page);
-		}
-		
-		return "board/write";
-	}
-	
-	@Auth
-	@RequestMapping(value="/write", method=RequestMethod.GET)
-	public String getWrite(HttpSession session, Model model) {
-		
-		return "board/write";
-	}
-	
-	@RequestMapping("/register")
-	public String register(String title, String content, HttpSession session) {
-		Long userNo;
-		
-		UserVo sessionUserVo = (UserVo) session.getAttribute("authUser");
-		if (sessionUserVo == null || title == null || title.equals("") || content == null || content.equals("")) {
-			return "redirect:/user/login";
-		}
-		
-		userNo = sessionUserVo.getNo();
-		
-		BoardVo boardVo = new BoardVo();
-		boardVo.setTitle(title);
-		boardVo.setContents(content);
-		boardVo.setUserNo(userNo);
-		
-		boardService.insert(boardVo);
-		
-		return "redirect:/board/list/0";
-	}
-	
-	@RequestMapping("/view/{no}/{page}")
-	public String view(@PathVariable("no") String no, 
-			@PathVariable("page") String page, 
-			@CookieValue(value = "boardViews", required = false) Cookie cookie, 
-			HttpServletResponse response, 
-			Model model) {
-		String writeNo = no;
-		
-		
-		Cookie viewsCookie = cookie;
-		
-		if (viewsCookie != null) {
-			if (!viewsCookie.getValue().contains("[" + writeNo +"]")) {
-				boardService.updateViews(Long.parseLong(writeNo));
-				viewsCookie.setValue(viewsCookie.getValue() + "[" + writeNo +"]");
-				viewsCookie.setPath("/");
-				viewsCookie.setMaxAge(60 * 60 * 24);
-				response.addCookie(viewsCookie);
-			}
-		} else {
-			Cookie newCookie = new Cookie("boardViews", "[" + writeNo +"]");
-			boardService.updateViews(Long.parseLong(writeNo));
-			newCookie.setPath("/");
-			newCookie.setMaxAge(60 * 60 * 24);
-			response.addCookie(newCookie);
-		}
-		
-		BoardVo vo = boardService.findWrite(Long.parseLong(writeNo));
-		
-		model.addAttribute("vo", vo);
-		model.addAttribute(page);
-		
+
+	@RequestMapping("/view/{no}")
+	public String view(@PathVariable("no") Long no, Model model) {
+		BoardVo boardVo = boardService.getContents(no);
+		model.addAttribute("boardVo", boardVo);
 		return "board/view";
 	}
-	
-	@RequestMapping("/modify/{no}/{page}")
-	public String modify(@PathVariable("no") String writeNo, 
-			@PathVariable("page") String page, HttpSession session, Model model) {
-		
-		if (page == null || page.equals("")) {
-			page = "0";
-		}
-		
-		UserVo sessionVo = (UserVo) session.getAttribute("authUser");
-		if (sessionVo == null) {
-			return "redirect:/user/login";
-		}
-		
-		BoardVo vo = boardService.findWrite(Long.parseLong(writeNo));
-		
-		model.addAttribute("vo", vo);
-		model.addAttribute("page", page);
-		
+
+	@Auth(role = "USER")
+	@RequestMapping("/delete/{no}")
+	public String delete(@AuthUser UserVo authUser, @PathVariable("no") Long boardNo, @RequestParam(value = "p", required = true, defaultValue = "1") Integer page, @RequestParam(value = "kwd", required = true, defaultValue = "") String keyword) {
+		boardService.deleteContents(boardNo, authUser.getNo());
+		return "redirect:/board?p=" + page + "&kwd=" + WebUtil.encodeURL(keyword, "UTF-8");
+	}
+
+	@Auth
+	@RequestMapping(value = "/modify/{no}")
+	public String modify(@AuthUser UserVo authUser, @PathVariable("no") Long no, Model model) {
+		BoardVo boardVo = boardService.getContents(no, authUser.getNo());
+		model.addAttribute("boardVo", boardVo);
 		return "board/modify";
 	}
-	
-	@RequestMapping("/modifyReg/{page}")
-	public String modifyReg(@PathVariable("page") String page,
-			String writeNo,
-			String title,
-			String content,
-			HttpSession session) {
-		
-		if (page == null || page.equals("")) {
-			page = "0";
-		}
-		
-		UserVo sessionVo = (UserVo) session.getAttribute("authUser");
-		if (sessionVo == null) {
 
-			return "redirect:/user/login";
-		}
-		
-		boardService.updateModify(Long.parseLong(writeNo), title, content);
-		
-		return "redirect:/board/list/"+ page;
+	@Auth
+	@RequestMapping(value = "/modify", method = RequestMethod.POST)
+	public String modify(@AuthUser UserVo authUser, @ModelAttribute BoardVo boardVo, @RequestParam(value = "p", required = true, defaultValue = "1") Integer page, @RequestParam(value = "kwd", required = true, defaultValue = "") String keyword) {
+		boardVo.setUserNo(authUser.getNo());
+		boardService.modifyContents(boardVo);
+		return "redirect:/board/view/" + boardVo.getNo() + "?p=" + page + "&kwd=" + WebUtil.encodeURL(keyword, "UTF-8");
+	}
+
+	@Auth
+	@RequestMapping(value = "/write", method = RequestMethod.GET)
+	public String write() {
+		return "board/write";
+	}
+
+	@Auth
+	@RequestMapping(value = "/write", method = RequestMethod.POST)
+	public String write(@AuthUser UserVo authUser, @ModelAttribute BoardVo boardVo, @RequestParam(value = "p", required = true, defaultValue = "1") Integer page, @RequestParam(value = "kwd", required = true, defaultValue = "") String keyword) {
+		boardVo.setUserNo(authUser.getNo());
+		boardService.addContents(boardVo);
+		return "redirect:/board?p=" + page + "&kwd=" + WebUtil.encodeURL(keyword, "UTF-8");
+	}
+
+	@Auth
+	@RequestMapping(value = "/reply/{no}")
+	public String reply(@PathVariable("no") Long no, Model model) {
+		BoardVo boardVo = boardService.getContents(no);
+		boardVo.setOrderNo(boardVo.getOrderNo() + 1);
+		boardVo.setDepth(boardVo.getDepth() + 1);
+
+		model.addAttribute("boardVo", boardVo);
+
+		return "board/reply";
 	}
 	
 }

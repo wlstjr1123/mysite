@@ -11,17 +11,21 @@ import com.douzone.mysite.vo.GuestBookVo;
 @Service
 public class GuestBookService {
 	@Autowired
-	private GuestBookRepository guestBookRepository;
+	GuestBookRepository guestbookRepository;
 	
-	public List<GuestBookVo> findAllList() {
-		return guestBookRepository.findAll();
+	public List<GuestBookVo> getMessageList() {
+			return guestbookRepository.findAll();
 	}
 	
-	public void add(GuestBookVo vo) {
-		guestBookRepository.insert(vo);
+	public boolean deleteMessage(Long no, String password) {
+		GuestBookVo vo = new GuestBookVo();
+		vo.setNo(no);
+		vo.setPassword(password);
+		
+		return guestbookRepository.delete(vo);
 	}
-	
-	public void delete(GuestBookVo vo) {
-		guestBookRepository.delete(vo);
+
+	public boolean addMessage(GuestBookVo vo) {
+		return guestbookRepository.insert(vo);
 	}
 }

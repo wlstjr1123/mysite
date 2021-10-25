@@ -1,8 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,42 +11,44 @@
 <script src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script>
 $(function(){
-console.log("loaded!!!");	
-	
 	$("#btn-check-email").click(function() {
 		var email = $("#email").val();
-		
-		if (email == '') {
-			return
+		if(email == '') {
+			return;
 		}
+		
 		console.log(email);
 		$.ajax({
 			url: "${pageContext.request.contextPath }/user/api/checkemail?email=" + email,
 			type: "get",
 			dataType: "json",
-			error: function(xhr, status, e){
+			error: function(xhr, status, e) {
 				console.log(status, e);
 			},
 			success: function(response) {
 				console.log(response);
+				if(response.result != "success") {
+					console.error(response.message);
+					return;
+				}
 				
-				if (response.exist) {
+				if(response.data) {
 					alert("존재하는 이메일입니다. 다른 이메일을 사용하세요.");
-					$("#email").val("");
-					$("#email").focus();
+					$("#email")
+						.val("")
+						.focus();
 					return;
 				}
 				
 				$("#btn-check-email").hide();
 				$("#img-check-email").show();
 			}
-		});
-	});
+		});		
+	});	
 });
 
 
 </script>
-
 </head>
 <body>
 	<div id="container">
@@ -70,7 +71,7 @@ console.log("loaded!!!");
 					<fieldset>
 						<legend>성별</legend>
 						<label>여</label> <input type="radio" name="gender" value="female" checked="checked">
-						<label>남</label> <input type="radio"W name="gender" value="male">
+						<label>남</label> <input type="radio" name="gender" value="male">
 					</fieldset>
 					
 					<fieldset>
@@ -84,9 +85,10 @@ console.log("loaded!!!");
 				</form>
 			</div>
 		</div>
-		<p id="test"></p>
-		<c:import url="/WEB-INF/views/includes/navigation.jsp"/>
-		<c:import url="/WEB-INF/views/includes/footer.jsp"/>
+		<p id="test">
+		</p>
+		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
+		<c:import url="/WEB-INF/views/includes/footer.jsp" />
 	</div>
 </body>
 </html>

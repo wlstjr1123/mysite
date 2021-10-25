@@ -12,14 +12,16 @@ import com.douzone.mysite.vo.GalleryVo;
 public class GalleryRepository {
 	@Autowired
 	private SqlSession sqlSession;
-	
-	public boolean insert(GalleryVo vo) {
-		int count = sqlSession.insert("gallery.insert", vo);
-		return count == 1;
+
+	public Boolean insert(GalleryVo vo) {
+		return 1 == sqlSession.insert("gallery.insert", vo);
 	}
-	
+
+	public Boolean delete(Long no) {
+		return 1 == sqlSession.delete("gallery.delete", no);
+	}
+
 	public List<GalleryVo> findAll() {
-		List<GalleryVo> list = sqlSession.selectList("gallery.findAll");
-		return list;
+		return sqlSession.selectList("gallery.findAll");
 	}
 }

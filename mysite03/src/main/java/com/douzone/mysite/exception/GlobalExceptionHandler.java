@@ -27,19 +27,20 @@ public class GlobalExceptionHandler {
 		HttpServletResponse response,
 		Exception e) throws Exception {
 		
+		System.out.println("!!!!!!!!!!!!!!!!!!!!");
 		// 1. 로깅
 		StringWriter errors = new StringWriter();
 		e.printStackTrace(new PrintWriter(errors));
 		LOGGER.error(errors.toString());
-		LOGGER.debug(errors.toString());
-		
+
 		// 2. 요청 구분
-		// 만약, JSON 요청인 경우, request header의 Accept에 application/json
-		// 만약, html 요청인 경우, request header의 Accept에 text/html
+		// 만약, JSON 요청인 경우 request header의 accept에 application/json
+		// 만약, html 요청인 경우 request header의 accept에 text/html
+		
 		String accept = request.getHeader("accept");
 		if(accept.matches(".*application/json.*")) {
-			//3. JSON응답
-			JsonResult result =  JsonResult.fail(errors.toString());
+			// 3. JSON 응답
+			JsonResult result = JsonResult.fail(errors.toString());
 			String jsonString = new ObjectMapper().writeValueAsString(result);
 			
 			response.setStatus(HttpServletResponse.SC_OK);
@@ -47,13 +48,11 @@ public class GlobalExceptionHandler {
 			os.write(jsonString.getBytes("utf-8"));
 			os.close();
 		} else {
-			// 3. 사과페이지(정상종료)
+			// 4. 사과페이지(HTML 응답, 정상종료)
 			request.setAttribute("exception", errors.toString());
 			request
 				.getRequestDispatcher("/WEB-INF/views/error/exception.jsp")
 				.forward(request, response);
 		}
-		
-		
 	}
 }

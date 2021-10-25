@@ -19,62 +19,56 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			Object handler)
 			throws Exception {
 		
-		// 1. handler 종류 확인
-		if (handler instanceof HandlerMethod == false) {
+		//1. handler 종류 확인
+		if(handler instanceof HandlerMethod == false) {
 			return true;
 		}
 		
-		// 2. casting
-		HandlerMethod handlerMethod = (HandlerMethod) handler;
+		//2. casting
+		HandlerMethod handlerMethod = (HandlerMethod)handler;
 		
-		// 3. Handler Method의 @Auth 받아오기
-		// getMethodAnnotation이 Auth클레스가 있는지 확인
-		// {여기에 @Auth 있는지 확인}
-		// public String 메서드(HttpSession session, Model model) {return "board/write";}
+		//3. Handler Method의 @Auth 받아오기
 		Auth auth = handlerMethod.getMethodAnnotation(Auth.class);
 		
-		// 4. Handler Method에 @Auth가 없으면 Type에 있는지 확인
-		// {여기에 Auth 있는지 확인}
-		// public class 클래스
-		if (auth == null) {
-			// 과제
-			
+		//4. Handler Method에 @Auth가 없으면 Type에 있는 지 확인(과제)
+		if(auth == null) {
 			auth = handlerMethod.getMethod().getDeclaringClass().getAnnotation(Auth.class);
-//			auth = handlerMethod.getBeanType().getAnnotation(Auth.class);
 		}
 		
-		// 5. Type과 Method에 @Auth가 적용이 안되어 있는 경우
-		// 3번과 4번이 모두 없을때.
-		if (auth == null) {
+		//5. Type과 Method에 @Auth가 적용이 안되어 있는 경우
+		if(auth == null) {
 			return true;
 		}
 		
-		// 6. @Auth가 적용이 되어 있기 때문에 인증(Authenfication) 여부 확인
-		// 여기서 확인해버리기.
+		//6. @Auth가 적용이 되어 있기 때문에 인증(Authenfication) 여부 확인
 		HttpSession session = request.getSession();
-		if (session == null) {
+		if(session == null) {
 			response.sendRedirect(request.getContextPath() + "/user/login");
 			return false;
 		}
-		UserVo authUser = (UserVo) session.getAttribute("authUser");
-		if (authUser == null) {
+		UserVo authUser = (UserVo)session.getAttribute("authUser");
+		if(authUser == null) {
 			response.sendRedirect(request.getContextPath() + "/user/login");
 			return false;
 		}
 		
-		// 7. 권한(Authorization) 체크를 위해서 @Auth의 role 가져오기("USER", "ADMIN")
+		//7. 권한(Authorization) 체크를 위해서 @Auth의 role 가져오기("USER", "ADMIN")
 		String role = auth.role();
 		
+		//8. @Auth의 role이 "USER" 인 경우, authUser의 role은 상관없다.
+		if("USER".equals(role)) {
+			return true;
+		}
 		
-		// 8. 권한 체크 (6번 결과와 7번결과를 비교하기)
-//		if ("ADMIN".equals(role)) {
-//			if (authUser.getRole().equals("ADMIN")==false) {
-//				response.sendRedirect(request.getContextPath());
-//				return false;
-//			}
-//		}
+		//9.@Auth의 role이 "ADMIN" 인 경우, authUser의 role은 "ADMIN" 이어야 한다.
+		if("ADMIN".equals(authUser.getRole()) == false) {
+			response.sendRedirect(request.getContextPath());
+			return false;
+		}
 		
-		
+		// 옳은 관리자 권한
+		// @Auth의 role: "ADMIN"
+		// authUser의 role: "ADMIN"
 		return true;
 	}
 }

@@ -1,5 +1,6 @@
 package com.douzone.mysite.service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,65 +11,70 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.douzone.mysite.exception.GalleryServiceException;
 import com.douzone.mysite.repository.GalleryRepository;
 import com.douzone.mysite.vo.GalleryVo;
 
 @Service
 public class GalleryService {
-	private static String SAVE_PATH = "/upload-images/mysite03";
-	private static String URL_BASE = "/images/mysite03";
+	private static String SAVE_PATH = "/upload-mysite";
+	private static String URL_BASE = "/gallery/images";	
 	
 	@Autowired
 	private GalleryRepository galleryRepository;
-	
-	public boolean insert(GalleryVo vo) {
-		return galleryRepository.insert(vo);
-	}
-	
-	public List<GalleryVo> findAll() {
+
+	public List<GalleryVo> getImages() {
 		return galleryRepository.findAll();
 	}
 	
-	public String restore(MultipartFile multipartFile) {
-		String url = null;
-
-		try {
-			if (multipartFile.isEmpty()) {
-				return url;
-			}
-
-			String originFileName = multipartFile.getOriginalFilename();
-			String extName = originFileName.substring(originFileName.lastIndexOf('.') + 1);
-			String saveFileName = generateSaveFileName(extName);
-			long fileSize = multipartFile.getSize();
-
-			byte[] bytes = multipartFile.getBytes();
-			OutputStream os = new FileOutputStream(SAVE_PATH + "/" + saveFileName);
-			os.write(bytes);
-			os.close();
-			
-			url = URL_BASE + "/" + saveFileName;
-		} catch (IOException ex) {
-			throw new RuntimeException("file upload error:" + ex);
-		}
-		return url;
+	public Boolean removeImage(Long no) {
+		return galleryRepository.delete(no);
 	}
 
-	private String generateSaveFileName(String extName) {
+	public void saveImage(MultipartFile file, String comments) throws GalleryServiceException {
+		try {
+			File uploadDirectory = new File(SAVE_PATH);
+			if(!uploadDirectory.exists()) {
+				uploadDirectory.mkdir();
+			}
+			
+			if(file.isEmpty()) {
+				throw new GalleryServiceException("file upload error: image empty");
+			}
+			
+			String originFilename = file.getOriginalFilename();
+			String extName = originFilename.substring(originFilename.lastIndexOf('.')+1);
+			String saveFilename = generateSaveFilename(extName);
+			
+			byte[] data = file.getBytes();
+			OutputStream os = new FileOutputStream(SAVE_PATH + "/" + saveFilename);
+			os.write(data);
+			os.close();
+			
+			GalleryVo vo = new GalleryVo();
+			vo.setUrl(URL_BASE + "/" + saveFilename);
+			vo.setComments(comments);
+			
+			galleryRepository.insert(vo);
+		} catch(IOException ex) {
+			throw new GalleryServiceException("file upload error:" + ex);
+		}
+	}
+	
+	private String generateSaveFilename(String extName) {
 		String filename = "";
-
-		Calendar clendar = Calendar.getInstance();
-
-		filename += clendar.get(Calendar.YEAR);
-		filename += clendar.get(Calendar.MONTH);
-		filename += clendar.get(Calendar.DATE);
-		filename += clendar.get(Calendar.HOUR);
-		filename += clendar.get(Calendar.MINUTE);
-		filename += clendar.get(Calendar.SECOND);
-		filename += clendar.get(Calendar.MILLISECOND);
+		
+		Calendar calendar = Calendar.getInstance();
+		
+		filename += calendar.get(Calendar.YEAR);
+		filename += calendar.get(Calendar.MONTH);
+		filename += calendar.get(Calendar.DATE);
+		filename += calendar.get(Calendar.HOUR);
+		filename += calendar.get(Calendar.MINUTE);
+		filename += calendar.get(Calendar.SECOND);
+		filename += calendar.get(Calendar.MILLISECOND);
 		filename += ("." + extName);
-
-		clendar.get(Calendar.YEAR);
+		
 		return filename;
 	}
 }

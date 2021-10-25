@@ -1,11 +1,11 @@
 package com.douzone.mysite.dto;
 
 public class JsonResult {
-	private String result;	/* "success" or "fail" */
-	private Object data;	/* if success, set */
-	private String message;	/* if fail, set */
+	private String result;  /* "success" or "fail" */
+	private Object data;    /* if success, set */
+	private String message; /* if fail, set */
 	
-	private JsonResult() {	}
+	private JsonResult() {}
 	private JsonResult(Object data) {
 		result = "success";
 		this.data = data;
@@ -13,7 +13,7 @@ public class JsonResult {
 	}
 	private JsonResult(String message) {
 		result = "fail";
-		this.data = null;
+		data = null;
 		this.message = message;
 	}
 	

@@ -14,9 +14,9 @@ public class AdminController {
 	public String main() {
 		return "admin/main";
 	}
-
+	
 	@RequestMapping("/guestbook")
-	public String guentbook() {
+	public String guestbook() {
 		return "admin/guestbook";
 	}
 
