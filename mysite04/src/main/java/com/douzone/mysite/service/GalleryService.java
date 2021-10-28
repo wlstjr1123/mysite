@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,9 @@ import com.douzone.mysite.vo.GalleryVo;
 
 @Service
 public class GalleryService {
+	@Autowired
+	private Environment env;
+	
 	private static String SAVE_PATH = "/upload-mysite";
 	private static String URL_BASE = "/gallery/images";	
 	
