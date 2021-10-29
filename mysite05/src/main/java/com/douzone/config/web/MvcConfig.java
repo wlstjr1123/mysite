@@ -74,7 +74,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	// Default Servlet Handler
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-		configurer.enable();
+		configurer.enable(); // Default Servlet로 가도록
 	}
 	
 	
