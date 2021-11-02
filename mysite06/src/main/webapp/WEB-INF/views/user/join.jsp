@@ -14,7 +14,7 @@
 <script>
 $(function(){
 	$("#btn-check-email").click(function() {
-		var email = $("#emaisl").val();
+		var email = $("#email").val();
 		if(email == '') {
 			return;
 		}
